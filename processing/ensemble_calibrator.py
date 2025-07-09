@@ -19,7 +19,7 @@ def create_ensemble_model():
     try:
         # Load data
         logging.info("Loading calibration data...")
-        df = pd.read_csv('processing/calibration_data.csv').dropna()
+        df = pd.read_csv('calibration_data.csv').dropna()
         
         if df.empty or len(df) < 100:
             logging.error("Insufficient data for ensemble training!")
@@ -83,40 +83,12 @@ def create_ensemble_model():
         
         logging.info(f"Optimized weights: {weights}")
         
-        # Create weighted ensemble class
-        class EnsembleModel:
-            def __init__(self, models, weights, scaler):
-                self.models = models
-                self.weights = weights
-                self.scaler = scaler
-            
-            def predict(self, X):
-                # Ensure X is scaled
-                if hasattr(X, 'shape') and X.shape[1] == 4:
-                    X_scaled = self.scaler.transform(X)
-                else:
-                    X_scaled = X  # Assume already scaled
-                
-                predictions = {}
-                for name, model in self.models.items():
-                    predictions[name] = model.predict(X_scaled)
-                
-                # Weighted average
-                ensemble_pred = sum(
-                    self.weights[name] * predictions[name]
-                    for name in self.models.keys()
-                )
-                return ensemble_pred
-            
-            def get_model_info(self):
-                return {
-                    'weights': self.weights,
-                    'models': list(self.models.keys()),
-                    'scores': model_scores
-                }
+        # Import the EnsembleModel class
+        from ensemble_model import EnsembleModel
         
         # Create ensemble
         ensemble = EnsembleModel(trained_models, weights, scaler)
+        ensemble.set_scores(model_scores)
         
         # Test ensemble performance
         ensemble_pred = ensemble.predict(X_test)
@@ -128,7 +100,7 @@ def create_ensemble_model():
         logging.info(f"  MAE: {ensemble_mae:.2f}")
         
         # Save ensemble model
-        joblib.dump(ensemble, 'processing/ensemble_calibrator.pkl')
+        joblib.dump(ensemble, 'ensemble_calibrator.pkl')
         logging.info("✅ Ensemble model saved successfully!")
         
         return ensemble
@@ -140,7 +112,7 @@ def create_ensemble_model():
 def load_ensemble_model():
     """Load the trained ensemble model"""
     try:
-        ensemble = joblib.load('processing/ensemble_calibrator.pkl')
+        ensemble = joblib.load('ensemble_calibrator.pkl')
         logging.info("✅ Ensemble model loaded successfully")
         return ensemble
     except Exception as e:

@@ -131,7 +131,7 @@ def train_advanced_model():
         logging.info("Loading and processing data with advanced features...")
         
         # Load base data
-        df = pd.read_csv('processing/calibration_data.csv')
+        df = pd.read_csv('calibration_data.csv')
         
         # Create advanced features
         df_advanced = create_advanced_features(df)
@@ -203,9 +203,9 @@ def train_advanced_model():
             logging.info(f"  {i+1:2d}. {name:25s}: {importance:.4f}")
         
         # Save model and related components
-        joblib.dump(model, 'processing/advanced_calibrator.pkl')
-        joblib.dump(scaler, 'processing/advanced_scaler.pkl')
-        joblib.dump(available_features, 'processing/advanced_features.pkl')
+        joblib.dump(model, 'advanced_calibrator.pkl')
+        joblib.dump(scaler, 'advanced_scaler.pkl')
+        joblib.dump(available_features, 'advanced_features.pkl')
         
         logging.info("\n✅ Advanced model saved successfully!")
         
@@ -219,9 +219,9 @@ def test_advanced_model():
     """Test the advanced model"""
     try:
         # Load model components
-        model = joblib.load('processing/advanced_calibrator.pkl')
-        scaler = joblib.load('processing/advanced_scaler.pkl')
-        features = joblib.load('processing/advanced_features.pkl')
+        model = joblib.load('advanced_calibrator.pkl')
+        scaler = joblib.load('advanced_scaler.pkl')
+        features = joblib.load('advanced_features.pkl')
         
         logging.info(f"✅ Loaded advanced model with {len(features)} features")
         

@@ -16,7 +16,7 @@ def train_production_calibration_model():
     
     try:
         logging.info("Loading calibration data...")
-        df = pd.read_csv('processing/calibration_data.csv').dropna()
+        df = pd.read_csv('calibration_data.csv').dropna()
         
         if df.empty or len(df) < 50:
             logging.error("Insufficient calibration data for training!")
@@ -118,8 +118,8 @@ def train_production_calibration_model():
             logging.info(f"  {name}: {importance:.3f}")
         
         # Save model and scaler
-        joblib.dump(model, 'processing/aod_to_pm25_calibrator.pkl')
-        joblib.dump(scaler, 'processing/feature_scaler.pkl')
+        joblib.dump(model, 'aod_to_pm25_calibrator.pkl')
+        joblib.dump(scaler, 'feature_scaler.pkl')
         
         logging.info("✅ Production calibration model and scaler saved successfully!")
         
