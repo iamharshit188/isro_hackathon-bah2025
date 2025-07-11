@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'utils/color_extensions.dart';
+import 'services/maps_service.dart';
 import 'services/cache_service.dart';
 import 'screens/location_init_screen.dart';
 
@@ -10,6 +12,15 @@ Future<void> main() async {
   
   // Load the environment variables from the .env file
   await dotenv.load(fileName: ".env");
+  
+  // Initialize Google Maps with API key from .env
+  try {
+    await MapsService.initialize();
+    debugPrint('✅ Google Maps initialized successfully');
+  } catch (e) {
+    debugPrint('❌ Failed to initialize Google Maps: $e');
+    // Continue without maps if initialization fails
+  }
   
   // Initialize cache service
   try {
