@@ -21,15 +21,15 @@ class AccuracyTestRunner:
         try:
             import requests
             response = requests.get("http://localhost:3001", timeout=5)
-            logging.info("✅ API server is already running")
+            logging.info("API server is already running")
             return True
         except:
-            logging.info("🚀 Starting API server...")
+            logging.info("Starting API server...")
             
             # Start Node.js server in background
             api_process = subprocess.Popen(
                 ['node', 'api/index.js'],
-                cwd='/Users/iamharshit188/Desktop/bah-aqi',
+                cwd='../',
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE
             )
@@ -41,10 +41,10 @@ class AccuracyTestRunner:
             try:
                 import requests
                 response = requests.get("http://localhost:3001", timeout=5)
-                logging.info("✅ API server started successfully")
+                logging.info("API server started successfully")
                 return True
             except:
-                logging.error("❌ Failed to start API server")
+                logging.error("Failed to start API server")
                 return False
     
     def start_calibration_api_if_needed(self):
@@ -52,15 +52,15 @@ class AccuracyTestRunner:
         try:
             import requests
             response = requests.get("http://localhost:5001/health", timeout=5)
-            logging.info("✅ Calibration API is already running")
+            logging.info("Calibration API is already running")
             return True
         except:
-            logging.info("🔬 Starting calibration API...")
+            logging.info("Starting calibration API...")
             
             # Start Flask calibration API in background
             cal_process = subprocess.Popen(
-                ['venv/bin/python', 'calibration_api/app.py'],
-                cwd='/Users/iamharshit188/Desktop/bah-aqi',
+                ['uv', 'run', 'python', 'calibration_api/app.py'],
+                cwd='../',
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE
             )
@@ -72,22 +72,22 @@ class AccuracyTestRunner:
             try:
                 import requests
                 response = requests.get("http://localhost:5001/health", timeout=5)
-                logging.info("✅ Calibration API started successfully")
+                logging.info("Calibration API started successfully")
                 return True
             except:
-                logging.error("❌ Failed to start calibration API")
+                logging.error("Failed to start calibration API")
                 return False
     
     def run_test_script(self, script_name, description):
         """Run a test script and capture results"""
-        logging.info(f"🧪 Running {description}...")
+        logging.info(f"Running {description}...")
         
         try:
             start_time = time.time()
             
             result = subprocess.run(
-                ['venv/bin/python', f'processing/{script_name}'],
-                cwd='/Users/iamharshit188/Desktop/bah-aqi',
+                ['uv', 'run', 'python', f'{script_name}'],
+                cwd='./',
                 capture_output=True,
                 text=True,
                 timeout=300  # 5 minute timeout
@@ -105,13 +105,13 @@ class AccuracyTestRunner:
             }
             
             if result.returncode == 0:
-                logging.info(f"✅ {description} completed successfully in {duration:.1f}s")
+                logging.info(f"{description} completed successfully in {duration:.1f}s")
             else:
-                logging.error(f"❌ {description} failed after {duration:.1f}s")
+                logging.error(f"{description} failed after {duration:.1f}s")
                 logging.error(f"Error: {result.stderr}")
             
         except subprocess.TimeoutExpired:
-            logging.error(f"⏰ {description} timed out after 5 minutes")
+            logging.error(f"{description} timed out after 5 minutes")
             self.results[script_name] = {
                 'description': description,
                 'success': False,
@@ -120,7 +120,7 @@ class AccuracyTestRunner:
                 'stderr': 'Timeout after 5 minutes'
             }
         except Exception as e:
-            logging.error(f"💥 {description} crashed: {e}")
+            logging.error(f"{description} crashed: {e}")
             self.results[script_name] = {
                 'description': description,
                 'success': False,
@@ -132,7 +132,7 @@ class AccuracyTestRunner:
     def run_all_tests(self):
         """Run all accuracy improvement tests"""
         
-        logging.info("🎯 Starting comprehensive accuracy testing...")
+        logging.info("Starting comprehensive accuracy testing...")
         
         # Ensure servers are running
         if not self.start_server_if_needed():
@@ -158,9 +158,9 @@ class AccuracyTestRunner:
         
         for script, description in tests:
             # Check if script exists
-            script_path = f'/Users/iamharshit188/Desktop/bah-aqi/processing/{script}'
+            script_path = f'./{script}'
             if not os.path.exists(script_path):
-                logging.warning(f"⚠️ Script {script} not found, skipping...")
+                logging.warning(f"Script {script} not found, skipping...")
                 continue
             
             self.run_test_script(script, description)
@@ -174,25 +174,25 @@ class AccuracyTestRunner:
         """Generate comprehensive test report"""
         
         logging.info("\n" + "="*60)
-        logging.info("📊 ACCURACY IMPROVEMENT TEST REPORT")
+        logging.info("ACCURACY IMPROVEMENT TEST REPORT")
         logging.info("="*60)
         
         total_tests = len(self.results)
         successful_tests = sum(1 for r in self.results.values() if r['success'])
         
-        logging.info(f"🎯 Overall Success Rate: {successful_tests}/{total_tests} ({100*successful_tests/total_tests:.1f}%)")
-        logging.info(f"⏱️  Total Test Duration: {sum(r['duration'] for r in self.results.values()):.1f}s")
+        logging.info(f"Overall Success Rate: {successful_tests}/{total_tests} ({100*successful_tests/total_tests:.1f}%)")
+        logging.info(f"Total Test Duration: {sum(r['duration'] for r in self.results.values()):.1f}s")
         
-        logging.info("\n📋 Individual Test Results:")
+        logging.info("\nIndividual Test Results:")
         for script_name, result in self.results.items():
-            status = "✅ PASS" if result['success'] else "❌ FAIL"
+            status = "PASS" if result['success'] else "FAIL"
             logging.info(f"  {status} | {result['description']:40} | {result['duration']:6.1f}s")
             
             if not result['success'] and result['stderr']:
                 logging.info(f"    Error: {result['stderr'][:100]}...")
         
         # Save detailed report to file
-        report_file = f"/Users/iamharshit188/Desktop/bah-aqi/processing/accuracy_test_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+        report_file = f"./accuracy_test_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
         with open(report_file, 'w') as f:
             f.write("ACCURACY IMPROVEMENT TEST REPORT\\n")
             f.write("="*50 + "\\n\\n")
@@ -206,26 +206,26 @@ class AccuracyTestRunner:
                 f.write(f"STDERR:\\n{result['stderr']}\\n\\n")
                 f.write("-"*50 + "\\n\\n")
         
-        logging.info(f"📄 Detailed report saved to: {report_file}")
+        logging.info(f"Detailed report saved to: {report_file}")
     
     def cleanup(self):
         """Clean up background processes"""
-        logging.info("🧹 Cleaning up background processes...")
+        logging.info("Cleaning up background processes...")
         
         for name, process in self.processes:
             try:
                 process.terminate()
                 process.wait(timeout=5)
-                logging.info(f"✅ Stopped {name}")
+                logging.info(f"Stopped {name}")
             except subprocess.TimeoutExpired:
                 process.kill()
-                logging.info(f"🔪 Force killed {name}")
+                logging.info(f"Force killed {name}")
             except Exception as e:
-                logging.error(f"⚠️ Error stopping {name}: {e}")
+                logging.error(f"Error stopping {name}: {e}")
     
     def signal_handler(self, signum, frame):
         """Handle interrupt signals"""
-        logging.info("\\n🛑 Received interrupt signal, cleaning up...")
+        logging.info("\nReceived interrupt signal, cleaning up...")
         self.cleanup()
         sys.exit(0)
 
@@ -239,9 +239,9 @@ def main():
     try:
         runner.run_all_tests()
     except KeyboardInterrupt:
-        logging.info("\\n🛑 Test execution interrupted by user")
+        logging.info("\nTest execution interrupted by user")
     except Exception as e:
-        logging.error(f"💥 Unexpected error: {e}")
+        logging.error(f"Unexpected error: {e}")
     finally:
         runner.cleanup()
 

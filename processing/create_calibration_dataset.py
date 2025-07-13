@@ -46,7 +46,7 @@ def create_realistic_calibration_dataset():
     output_path = 'calibration_data.csv'
     df.to_csv(output_path, index=False)
     
-    logging.info(f"✅ Created realistic dataset with {len(df)} samples")
+    logging.info(f"Created realistic dataset with {len(df)} samples")
     logging.info(f"AOD range: {df['satellite_aod'].min():.1f} to {df['satellite_aod'].max():.1f}")
     logging.info(f"PM2.5 range: {df['ground_truth_pm25'].min():.2f} to {df['ground_truth_pm25'].max():.2f}")
     logging.info(f"AOD-PM2.5 correlation: {df['satellite_aod'].corr(df['ground_truth_pm25']):.3f}")

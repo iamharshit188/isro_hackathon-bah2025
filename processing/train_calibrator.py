@@ -72,9 +72,9 @@ def train_production_calibration_model():
         
         # Overfitting check
         if abs(train_r2 - test_r2) > 0.1:
-            logging.warning("⚠️ Possible overfitting detected!")
+            logging.warning("Possible overfitting detected!")
         else:
-            logging.info("✅ Model generalization looks good!")
+            logging.info("Model generalization looks good!")
         
         # --- [CORRECTED DIVERSITY TEST] ---
         # Use realistic AOD values within the training range
@@ -105,10 +105,10 @@ def train_production_calibration_model():
         # Verify diversity with more realistic threshold
         prediction_std = np.std(predictions)
         if prediction_std < 10:  # Relaxed threshold for realistic expectations
-            logging.warning(f"⚠️ Limited prediction diversity detected! Std={prediction_std:.2f}")
+            logging.warning(f"Limited prediction diversity detected! Std={prediction_std:.2f}")
             logging.info("This might be acceptable if your training data has consistent relationships.")
         else:
-            logging.info(f"✅ Good prediction diversity! Std={prediction_std:.2f}")
+            logging.info(f"Good prediction diversity! Std={prediction_std:.2f}")
         
         # Feature importance analysis
         feature_importance = model.feature_importances_
@@ -121,7 +121,7 @@ def train_production_calibration_model():
         joblib.dump(model, 'aod_to_pm25_calibrator.pkl')
         joblib.dump(scaler, 'feature_scaler.pkl')
         
-        logging.info("✅ Production calibration model and scaler saved successfully!")
+        logging.info("Production calibration model and scaler saved successfully!")
         
         # Final validation with extreme cases within range
         logging.info("Testing extreme cases within training range...")
@@ -135,7 +135,7 @@ def train_production_calibration_model():
         for i, (inputs, pred) in enumerate(zip(extreme_cases, extreme_predictions)):
             logging.info(f"  Extreme case {i+1}: AOD={inputs[0]:.0f} → PM2.5={pred:.1f}")
         
-        logging.info("🎉 Model training completed successfully!")
+        logging.info("Model training completed successfully!")
         
     except Exception as e:
         logging.error(f"Error during training: {e}", exc_info=True)
