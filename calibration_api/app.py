@@ -4,11 +4,14 @@ import numpy as np
 import pandas as pd
 import logging
 import os
+import sys
+
+# Add processing directory to path to load custom modules
+processing_dir = os.path.join(os.path.dirname(__file__), '..', 'processing')
+sys.path.append(processing_dir)
 
 app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
-
-processing_dir = os.path.join(os.path.dirname(__file__), '..', 'processing')
 basic_model_path = os.path.join(processing_dir, 'aod_to_pm25_calibrator.pkl')
 basic_scaler_path = os.path.join(processing_dir, 'feature_scaler.pkl')
 ensemble_path = os.path.join(processing_dir, 'ensemble_calibrator.pkl')
