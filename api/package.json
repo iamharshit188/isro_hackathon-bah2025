@@ -1,0 +1,31 @@
+{
+  "name": "isro_hackathon-bah2025",
+  "version": "1.0.0",
+  "description": "A new Flutter project.",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iamharshit188/isro_hackathon-bah2025.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/iamharshit188/isro_hackathon-bah2025/issues"
+  },
+  "homepage": "https://github.com/iamharshit188/isro_hackathon-bah2025#readme",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.51.0",
+    "axios": "^1.10.0",
+    "dotenv": "^17.2.0",
+    "express": "^5.1.0"
+  }
+}
