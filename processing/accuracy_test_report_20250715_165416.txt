@@ -1,0 +1,69 @@
+ACCURACY IMPROVEMENT TEST REPORT\n==================================================\n\nTEST: Basic Calibration Model Training\nScript: train_calibrator.py\nSuccess: True\nDuration: 61.9s\nSTDOUT:\n\n\nSTDERR:\n2025-07-15 16:53:51,657 - INFO - Loading calibration data...
+2025-07-15 16:53:51,657 - ERROR - Error during training: [Errno 2] No such file or directory: 'calibration_data.csv'
+Traceback (most recent call last):
+  File "/Users/iamharshit188/Desktop/ISRO/WIP/isro_hackathon-bah2025/processing/train_calibrator.py", line 19, in train_production_calibration_model
+    df = pd.read_csv('calibration_data.csv').dropna()
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/iamharshit188/Desktop/ISRO/WIP/isro_hackathon-bah2025/.venv/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 1026, in read_csv
+    return _read(filepath_or_buffer, kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/iamharshit188/Desktop/ISRO/WIP/isro_hackathon-bah2025/.venv/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 620, in _read
+    parser = TextFileReader(filepath_or_buffer, **kwds)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/iamharshit188/Desktop/ISRO/WIP/isro_hackathon-bah2025/.venv/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 1620, in __init__
+    self._engine = self._make_engine(f, self.engine)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/iamharshit188/Desktop/ISRO/WIP/isro_hackathon-bah2025/.venv/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 1880, in _make_engine
+    self.handles = get_handle(
+                   ^^^^^^^^^^^
+  File "/Users/iamharshit188/Desktop/ISRO/WIP/isro_hackathon-bah2025/.venv/lib/python3.12/site-packages/pandas/io/common.py", line 873, in get_handle
+    handle = open(
+             ^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'calibration_data.csv'
+\n\n--------------------------------------------------\n\nTEST: Ensemble Model Training\nScript: ensemble_calibrator.py\nSuccess: True\nDuration: 2.6s\nSTDOUT:\n🚀 Creating ensemble calibration model...
+\n\nSTDERR:\nINFO:root:Loading calibration data...
+ERROR:root:Error creating ensemble model: [Errno 2] No such file or directory: 'calibration_data.csv'
+\n\n--------------------------------------------------\n\nTEST: Advanced Feature Model Training\nScript: advanced_feature_engineering.py\nSuccess: True\nDuration: 2.2s\nSTDOUT:\n🚀 Training advanced feature model...
+\n\nSTDERR:\nINFO:root:Loading and processing data with advanced features...
+ERROR:root:Error training advanced model: [Errno 2] No such file or directory: 'calibration_data.csv'
+\n\n--------------------------------------------------\n\nTEST: Direct Model Testing\nScript: test_model_directly.py\nSuccess: True\nDuration: 0.7s\nSTDOUT:\n🔍 Loading model and scaler...
+❌ Error: [Errno 2] No such file or directory: 'aod_to_pm25_calibrator.pkl'
+\n\nSTDERR:\n\n\n--------------------------------------------------\n\nTEST: Model Debug Analysis\nScript: debug_calibration_model.py\nSuccess: False\nDuration: 1.8s\nSTDOUT:\n🔍 Loading calibration data...
+\n\nSTDERR:\nTraceback (most recent call last):
+  File "/Users/iamharshit188/Desktop/ISRO/WIP/isro_hackathon-bah2025/processing/debug_calibration_model.py", line 10, in <module>
+    df = pd.read_csv('calibration_data.csv')
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/iamharshit188/Desktop/ISRO/WIP/isro_hackathon-bah2025/.venv/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 1026, in read_csv
+    return _read(filepath_or_buffer, kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/iamharshit188/Desktop/ISRO/WIP/isro_hackathon-bah2025/.venv/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 620, in _read
+    parser = TextFileReader(filepath_or_buffer, **kwds)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/iamharshit188/Desktop/ISRO/WIP/isro_hackathon-bah2025/.venv/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 1620, in __init__
+    self._engine = self._make_engine(f, self.engine)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/iamharshit188/Desktop/ISRO/WIP/isro_hackathon-bah2025/.venv/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 1880, in _make_engine
+    self.handles = get_handle(
+                   ^^^^^^^^^^^
+  File "/Users/iamharshit188/Desktop/ISRO/WIP/isro_hackathon-bah2025/.venv/lib/python3.12/site-packages/pandas/io/common.py", line 873, in get_handle
+    handle = open(
+             ^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'calibration_data.csv'
+\n\n--------------------------------------------------\n\nTEST: CPCB Validation Testing\nScript: validate_against_cpcb.py\nSuccess: True\nDuration: 5.4s\nSTDOUT:\n🔍 Starting model accuracy validation...
+
+🌍 Testing Delhi...
+Warning: Supabase credentials not found in environment
+❌ Delhi: No valid data received
+
+🌍 Testing Mumbai...
+Warning: Supabase credentials not found in environment
+❌ Mumbai: No valid data received
+
+🌍 Testing Bangalore...
+Warning: Supabase credentials not found in environment
+❌ Bangalore: No valid data received
+
+🌍 Testing Chennai...
+Warning: Supabase credentials not found in environment
+❌ Chennai: No valid data received
+\n\nSTDERR:\n\n\n--------------------------------------------------\n\n
