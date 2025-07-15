@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import '../models/city_image.dart';
@@ -28,7 +27,14 @@ class ImageService {
         final photos = data['photos'] as List;
         
         if (photos.isNotEmpty) {
-          return CityImage.fromJson(data);
+          final photo = photos.first as Map<String, dynamic>;
+          return CityImage(
+            url: photo['src']['medium'] ?? '',
+            attribution: photo['photographer'] ?? 'Unknown',
+            description: photo['alt'] ?? cityName,
+            width: photo['width'],
+            height: photo['height'],
+          );
         }
       }
     } catch (e) {
@@ -41,37 +47,37 @@ class ImageService {
   CityImage _getDefaultImage(String cityName) {
     // Region-specific default images based on city characteristics
     final defaultImages = [
-      const CityImage(
-        imageUrl: 'https://images.pexels.com/photos/1007657/pexels-photo-1007657.jpeg', // Delhi India Gate
-        photographerName: 'Ganesh Jhunjhunwala'
+      CityImage(
+        url: 'https://images.pexels.com/photos/1007657/pexels-photo-1007657.jpeg', // Delhi India Gate
+        attribution: 'Ganesh Jhunjhunwala'
       ),
-      const CityImage(
-        imageUrl: 'https://images.pexels.com/photos/789750/pexels-photo-789750.jpeg', // Mumbai marine drive
-        photographerName: 'Pixabay'
+      CityImage(
+        url: 'https://images.pexels.com/photos/789750/pexels-photo-789750.jpeg', // Mumbai marine drive
+        attribution: 'Pixabay'
       ),
-      const CityImage(
-        imageUrl: 'https://images.pexels.com/photos/1534394/pexels-photo-1534394.jpeg', // Traditional Indian architecture
-        photographerName: 'Abhishek Gaurav'
+      CityImage(
+        url: 'https://images.pexels.com/photos/1534394/pexels-photo-1534394.jpeg', // Traditional Indian architecture
+        attribution: 'Abhishek Gaurav'
       ),
-      const CityImage(
-        imageUrl: 'https://images.pexels.com/photos/2889728/pexels-photo-2889728.jpeg', // Hawa Mahal Jaipur
-        photographerName: 'Suraphat Nuea-on'
+      CityImage(
+        url: 'https://images.pexels.com/photos/2889728/pexels-photo-2889728.jpeg', // Hawa Mahal Jaipur
+        attribution: 'Suraphat Nuea-on'
       ),
-      const CityImage(
-        imageUrl: 'https://images.pexels.com/photos/1098460/pexels-photo-1098460.jpeg', // South Indian temple architecture
-        photographerName: 'Suraphat Nuea-on'
+      CityImage(
+        url: 'https://images.pexels.com/photos/1098460/pexels-photo-1098460.jpeg', // South Indian temple architecture
+        attribution: 'Suraphat Nuea-on'
       ),
-      const CityImage(
-        imageUrl: 'https://images.pexels.com/photos/1591447/pexels-photo-1591447.jpeg', // Indian riverside city
-        photographerName: 'Naveen Annam'
+      CityImage(
+        url: 'https://images.pexels.com/photos/1591447/pexels-photo-1591447.jpeg', // Indian riverside city
+        attribution: 'Naveen Annam'
       ),
-      const CityImage(
-        imageUrl: 'https://images.pexels.com/photos/161963/city-skyline-skyscraper-tower-161963.jpeg', // Modern IT city
-        photographerName: 'Pixabay'
+      CityImage(
+        url: 'https://images.pexels.com/photos/161963/city-skyline-skyscraper-tower-161963.jpeg', // Modern IT city
+        attribution: 'Pixabay'
       ),
-      const CityImage(
-        imageUrl: 'https://images.pexels.com/photos/1105766/pexels-photo-1105766.jpeg', // Coastal Indian city
-        photographerName: 'Aleksandar Pasaric'
+      CityImage(
+        url: 'https://images.pexels.com/photos/1105766/pexels-photo-1105766.jpeg', // Coastal Indian city
+        attribution: 'Aleksandar Pasaric'
       ),
     ];
     

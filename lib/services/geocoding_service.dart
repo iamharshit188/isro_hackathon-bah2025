@@ -11,16 +11,43 @@ class GeocodingService {
         final placemark = placemarks.first;
         final cityName = placemark.locality ?? placemark.subAdministrativeArea ?? 'Unknown City';
         final stateName = placemark.administrativeArea ?? 'Unknown State';
-        return GeocodingData(cityName: cityName, stateName: stateName);
+        return GeocodingData(
+          cityName: cityName, 
+          stateName: stateName,
+          state: stateName,
+          country: placemark.country ?? 'Unknown',
+          postalCode: placemark.postalCode ?? '',
+          address: placemark.street ?? '',
+          latitude: lat,
+          longitude: lon,
+        );
       }
       
-      return GeocodingData(cityName: 'Unnamed Area', stateName: '');
+      return GeocodingData(
+        cityName: 'Unnamed Area', 
+        stateName: '',
+        state: '',
+        country: 'Unknown',
+        postalCode: '',
+        address: '',
+        latitude: lat,
+        longitude: lon,
+      );
 
     } catch (e) {
       // Don't use print in production code
       // debugPrint("Error in GeocodingService: $e");
       // In case of error, return a specific error object
-      return GeocodingData(cityName: 'N/A', stateName: 'Could not determine location');
+      return GeocodingData(
+        cityName: 'N/A', 
+        stateName: 'Could not determine location',
+        state: 'Could not determine location',
+        country: 'Unknown',
+        postalCode: '',
+        address: '',
+        latitude: lat,
+        longitude: lon,
+      );
     }
   }
-} 
+}

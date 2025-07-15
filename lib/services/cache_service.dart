@@ -28,10 +28,30 @@ class CacheService {
         Hive.registerAdapter(AqiHistoryEntryAdapter());
       }
 
-      // Open boxes
-      _aqiCacheBox = await Hive.openBox<EnhancedAqiData>(aqiCacheBoxName);
-      _historyBox = await Hive.openBox<AqiHistoryEntry>(historyBoxName);
-      _favoritesBox = await Hive.openBox<String>(favoritesBoxName);
+      try {
+        // Try to open boxes, if they fail due to corruption, delete and recreate
+        _aqiCacheBox = await Hive.openBox<EnhancedAqiData>(aqiCacheBoxName);
+      } catch (e) {
+        debugPrint('⚠️ AQI cache box corrupted, deleting and recreating: $e');
+        await Hive.deleteBoxFromDisk(aqiCacheBoxName);
+        _aqiCacheBox = await Hive.openBox<EnhancedAqiData>(aqiCacheBoxName);
+      }
+      
+      try {
+        _historyBox = await Hive.openBox<AqiHistoryEntry>(historyBoxName);
+      } catch (e) {
+        debugPrint('⚠️ History box corrupted, deleting and recreating: $e');
+        await Hive.deleteBoxFromDisk(historyBoxName);
+        _historyBox = await Hive.openBox<AqiHistoryEntry>(historyBoxName);
+      }
+      
+      try {
+        _favoritesBox = await Hive.openBox<String>(favoritesBoxName);
+      } catch (e) {
+        debugPrint('⚠️ Favorites box corrupted, deleting and recreating: $e');
+        await Hive.deleteBoxFromDisk(favoritesBoxName);
+        _favoritesBox = await Hive.openBox<String>(favoritesBoxName);
+      }
 
       debugPrint('✅ Cache service initialized');
       
@@ -40,7 +60,22 @@ class CacheService {
       
     } catch (e) {
       debugPrint('❌ Failed to initialize cache service: $e');
-      rethrow;
+      
+      // As a last resort, clear all boxes and start fresh
+      try {
+        await Hive.deleteBoxFromDisk(aqiCacheBoxName);
+        await Hive.deleteBoxFromDisk(historyBoxName);
+        await Hive.deleteBoxFromDisk(favoritesBoxName);
+        
+        _aqiCacheBox = await Hive.openBox<EnhancedAqiData>(aqiCacheBoxName);
+        _historyBox = await Hive.openBox<AqiHistoryEntry>(historyBoxName);
+        _favoritesBox = await Hive.openBox<String>(favoritesBoxName);
+        
+        debugPrint('✅ Cache service initialized after cleanup');
+      } catch (e2) {
+        debugPrint('❌ Failed to initialize cache service even after cleanup: $e2');
+        rethrow;
+      }
     }
   }
 

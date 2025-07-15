@@ -141,9 +141,9 @@ class _EnhancedHomeScreenState extends ConsumerState<EnhancedHomeScreen> {
         background: Stack(
           fit: StackFit.expand,
           children: [
-            if (cityImage?.imageUrl != null)
+            if (cityImage?.url != null)
               CachedNetworkImage(
-                imageUrl: cityImage.imageUrl,
+                imageUrl: cityImage.url,
                 fit: BoxFit.cover,
                 placeholder: (context, url) => Container(
                   color: Colors.grey[300],
@@ -313,27 +313,52 @@ class _EnhancedHomeScreenState extends ConsumerState<EnhancedHomeScreen> {
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: GoogleMap(
-              initialCameraPosition: CameraPosition(
-                target: LatLng(aqiData.latitude, aqiData.longitude),
-                zoom: 12,
-              ),
-              markers: {
-                Marker(
-                  markerId: const MarkerId('aqi_location'),
-                  position: LatLng(aqiData.latitude, aqiData.longitude),
-                  infoWindow: InfoWindow(
-                    title: aqiData.city,
-                    snippet: 'AQI: ${aqiData.aqi.toInt()}',
-                  ),
+            child: Container(
+              color: Colors.grey[100],
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.location_on,
+                      size: 48,
+                      color: Colors.grey[400],
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      'Location: ${aqiData.city}',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Lat: ${aqiData.latitude.toStringAsFixed(4)}, Lon: ${aqiData.longitude.toStringAsFixed(4)}',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey[500],
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.blue[50],
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        'Maps temporarily disabled',
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: Colors.blue[600],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              },
-              onMapCreated: (GoogleMapController controller) {
-                _mapController = controller;
-              },
-              zoomControlsEnabled: false,
-              mapToolbarEnabled: false,
-              myLocationButtonEnabled: false,
+              ),
             ),
           ),
         ),
@@ -350,13 +375,13 @@ class _EnhancedHomeScreenState extends ConsumerState<EnhancedHomeScreen> {
       if (pollutants['pm25'] != null) {
         statCards.add(StatsCard(
           title: 'PM2.5',
-          value: '${pollutants['pm25'].toStringAsFixed(2)} µg/m³',
+          value: '${pollutants['pm25']!.toStringAsFixed(2)} µg/m³',
         ));
       }
       if (pollutants['pm10'] != null) {
         statCards.add(StatsCard(
           title: 'PM10',
-          value: '${pollutants['pm10'].toStringAsFixed(2)} µg/m³',
+          value: '${pollutants['pm10']!.toStringAsFixed(2)} µg/m³',
         ));
       }
     }
