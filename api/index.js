@@ -22,7 +22,13 @@ if (missingVars.length > 0) {
     process.exit(1);
 }
 
+const { createClient } = require('@supabase/supabase-js');
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
+
+module.exports = { supabase };
+
 const aqiRoutes = require('./routes/aqi');
+const heatmapRoutes = require('./routes/heatmap');
 
 const app = express();
 
@@ -34,6 +40,7 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 app.use('/api/v1/aqi', aqiRoutes);
+app.use('/api/v1', heatmapRoutes);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
