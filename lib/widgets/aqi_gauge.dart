@@ -3,7 +3,7 @@ import 'dart:math' as math;
 import '../utils/aqi_utils.dart';
 
 class AqiGauge extends StatefulWidget {
-  final int aqi;
+  final num aqi;
   final double size;
 
   const AqiGauge({super.key, required this.aqi, this.size = 200});

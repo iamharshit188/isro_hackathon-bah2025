@@ -2,29 +2,23 @@ import 'package:flutter/material.dart';
 
 /// Extensions on [Color] to provide additional utility methods
 extension ColorExtensions on Color {
-  /// Returns a new color with the specified alpha value
-  /// 
-  /// [alpha] should be between 0.0 and 1.0, where 0.0 is completely transparent
-  /// and 1.0 is completely opaque.
   Color withValues({double? red, double? green, double? blue, double? alpha}) {
     return Color.fromRGBO(
-      (red != null) ? (red * 255).round() : this.red,
-      (green != null) ? (green * 255).round() : this.green,
-      (blue != null) ? (blue * 255).round() : this.blue,
-      alpha ?? this.opacity,
+      (red != null) ? (red * 255).round() : (toARGB32() >> 16) & 0xFF,
+      (green != null) ? (green * 255).round() : (toARGB32() >> 8) & 0xFF,
+      (blue != null) ? (blue * 255).round() : toARGB32() & 0xFF,
+      alpha ?? ((toARGB32() >> 24) & 0xFF) / 255.0,
     );
   }
-  
-  /// Returns a new color with the alpha channel set to the given value
-  Color withAlpha(int alpha) => this.withOpacity(alpha / 255);
-  
-  /// Returns a new color with the opacity set to the given value
+
+  Color withAlpha(int alpha) => withOpacity(alpha / 255);
+
   Color withOpacity(double opacity) => Color.fromRGBO(
-    this.red,
-    this.green,
-    this.blue,
-    opacity,
-  );
+        (toARGB32() >> 16) & 0xFF,
+        (toARGB32() >> 8) & 0xFF,
+        toARGB32() & 0xFF,
+        opacity,
+      );
   
   /// Returns a new color that is lighter by the given percent
   Color lighter(double percent) {

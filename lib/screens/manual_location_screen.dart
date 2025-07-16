@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/location_provider.dart';
 import '../screens/home_screen.dart';
+import '../screens/location_search_screen.dart';
 
 class ManualLocationScreen extends ConsumerStatefulWidget {
   const ManualLocationScreen({super.key});
 
   @override
-  ConsumerState<ManualLocationScreen> createState() => _ManualLocationScreenState();
+  ConsumerState<ManualLocationScreen> createState() =>
+      _ManualLocationScreenState();
 }
 
 class _ManualLocationScreenState extends ConsumerState<ManualLocationScreen> {
@@ -42,13 +44,11 @@ class _ManualLocationScreenState extends ConsumerState<ManualLocationScreen> {
     try {
       final lat = double.parse(_latController.text);
       final lon = double.parse(_lonController.text);
-      
-      // Update the location in the provider
+
       await ref.read(locationProvider.notifier).setManualLocation(lat, lon);
 
       if (!mounted) return;
-      
-      // Navigate to home screen
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const HomeScreen()),
@@ -60,6 +60,25 @@ class _ManualLocationScreenState extends ConsumerState<ManualLocationScreen> {
       );
     } finally {
       if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _searchLocation() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const LocationSearchScreen()),
+    );
+
+    if (result != null && result is Map) {
+      final lat = result['latitude'];
+      final lon = result['longitude'];
+      await ref.read(locationProvider.notifier).setManualLocation(lat, lon);
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+        );
+      }
     }
   }
 
@@ -83,13 +102,20 @@ class _ManualLocationScreenState extends ConsumerState<ManualLocationScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              ElevatedButton.icon(
+                onPressed: _searchLocation,
+                icon: const Icon(Icons.search),
+                label: const Text('Search for a location'),
+              ),
+              const SizedBox(height: 24),
               TextFormField(
                 controller: _latController,
                 decoration: const InputDecoration(
                   labelText: 'Latitude',
                   hintText: 'Enter latitude (e.g., 28.6139)',
                 ),
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
                 validator: (value) => _validateCoordinate(value, true),
               ),
               const SizedBox(height: 16),
@@ -99,7 +125,8 @@ class _ManualLocationScreenState extends ConsumerState<ManualLocationScreen> {
                   labelText: 'Longitude',
                   hintText: 'Enter longitude (e.g., 77.2090)',
                 ),
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
                 validator: (value) => _validateCoordinate(value, false),
               ),
               const SizedBox(height: 24),

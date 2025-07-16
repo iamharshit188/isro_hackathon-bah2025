@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 
+import 'manual_location_screen.dart'; // Replaced location_search_screen.dart
 import '../providers/location_provider.dart';
 import 'main_navigation_screen.dart';
 
@@ -356,79 +357,10 @@ class _LocationInitScreenState extends ConsumerState<LocationInitScreen> {
   }
 
   void _showManualLocationDialog() {
-    final TextEditingController latController = TextEditingController();
-    final TextEditingController lonController = TextEditingController();
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Enter Location Manually'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: latController,
-              decoration: const InputDecoration(
-                labelText: 'Latitude',
-                hintText: 'e.g., 28.6139',
-              ),
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: lonController,
-              decoration: const InputDecoration(
-                labelText: 'Longitude',
-                hintText: 'e.g., 77.2090',
-              ),
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'You can find your coordinates by searching "my coordinates" in Google.',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey[600],
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () async {
-              final lat = double.tryParse(latController.text);
-              final lon = double.tryParse(lonController.text);
-              
-              if (lat != null && lon != null && 
-                  lat >= -90 && lat <= 90 && 
-                  lon >= -180 && lon <= 180) {
-                final navigator = Navigator.of(context);
-                navigator.pop();
-                
-                await ref.read(locationProvider.notifier).setManualLocation(lat, lon);
-                
-                if (mounted) {
-                  navigator.pushReplacement(
-                    MaterialPageRoute(
-                      builder: (context) => const MainNavigationScreen(),
-                    ),
-                  );
-                }
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Please enter valid coordinates'),
-                  ),
-                );
-              }
-            },
-            child: const Text('Continue'),
-          ),
-        ],
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const ManualLocationScreen(),
       ),
     );
   }

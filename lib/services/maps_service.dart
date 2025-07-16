@@ -16,7 +16,6 @@ class MapsService {
       
       return false;
     } catch (e) {
-      print('Failed to initialize Google Maps: $e');
       return false;
     }
   }

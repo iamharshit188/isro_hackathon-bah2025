@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'enhanced_home_screen.dart';
 import 'heatmap_screen.dart';
@@ -17,6 +18,8 @@ class CurrentIndexNotifier extends StateNotifier<int> {
     state = index;
   }
 }
+
+final heatmapTargetProvider = StateProvider<LatLng?>((ref) => null);
 
 class MainNavigationScreen extends ConsumerWidget {
   const MainNavigationScreen({super.key});
@@ -38,6 +41,7 @@ class MainNavigationScreen extends ConsumerWidget {
       ),
       floatingActionButton: currentIndex == 0
           ? FloatingActionButton(
+              heroTag: "main_fab",
               onPressed: () => _showLocationOptions(context, ref),
               child: const Icon(Icons.add_location_alt),
             )
@@ -47,7 +51,7 @@ class MainNavigationScreen extends ConsumerWidget {
           color: Colors.white,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
+          color: Colors.black.withAlpha(26),
               blurRadius: 8,
               offset: const Offset(0, -2),
             ),
@@ -108,12 +112,9 @@ class MainNavigationScreen extends ConsumerWidget {
 
     return GestureDetector(
       onTap: () => ref.read(currentIndexProvider.notifier).setIndex(index),
-      child: Container(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          color: isActive ? colorScheme.primary.withValues(alpha: 0.1) : Colors.transparent,
-          borderRadius: BorderRadius.circular(16),
-        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -146,8 +147,8 @@ class MainNavigationScreen extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop();
               _getCurrentLocation(context, ref);
+              Navigator.of(context).pop();
             },
             child: const Text('Use Current Location'),
           ),
@@ -166,13 +167,17 @@ class MainNavigationScreen extends ConsumerWidget {
   void _getCurrentLocation(BuildContext context, WidgetRef ref) async {
     try {
       await ref.read(locationProvider.notifier).determinePosition();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Location updated successfully')),
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Location updated successfully')),
+        );
+      }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to get location: $e')),
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to get location: $e')),
+        );
+      }
     }
   }
 
@@ -223,23 +228,30 @@ class MainNavigationScreen extends ConsumerWidget {
             onPressed: () async {
               final lat = double.tryParse(latController.text);
               final lon = double.tryParse(lonController.text);
-              
-              if (lat != null && lon != null && 
-                  lat >= -90 && lat <= 90 && 
-                  lon >= -180 && lon <= 180) {
+
+              if (lat != null &&
+                  lon != null &&
+                  lat >= -90 &&
+                  lat <= 90 &&
+                  lon >= -180 &&
+                  lon <= 180) {
                 Navigator.of(context).pop();
-                
+
                 await ref.read(locationProvider.notifier).setManualLocation(lat, lon);
-                
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Location set successfully')),
-                );
+
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Location set successfully')),
+                  );
+                }
               } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Please enter valid coordinates'),
-                  ),
-                );
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please enter valid coordinates'),
+                    ),
+                  );
+                }
               }
             },
             child: const Text('Set Location'),

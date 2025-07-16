@@ -95,15 +95,21 @@ class HomeScreen extends ConsumerWidget {
         background: Stack(
           fit: StackFit.expand,
           children: [
-            CachedNetworkImage(
-              imageUrl: data.cityImage.imageUrl,
-              fit: BoxFit.cover,
-              placeholder: (context, url) => Container(color: Colors.grey[300]),
-              errorWidget: (context, url, error) => Container(
+            if (data.cityImage?.url != null)
+              CachedNetworkImage(
+                imageUrl: data.cityImage.url,
+                fit: BoxFit.cover,
+                placeholder: (context, url) => Container(color: Colors.grey[300]),
+                errorWidget: (context, url, error) => Container(
+                  color: Colors.grey[300],
+                  child: const Icon(Icons.image_not_supported, color: Colors.grey),
+                ),
+              )
+            else
+              Container(
                 color: Colors.grey[300],
                 child: const Icon(Icons.image_not_supported, color: Colors.grey),
               ),
-            ),
             const DecoratedBox(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -130,7 +136,7 @@ class HomeScreen extends ConsumerWidget {
                     ),
                   ),
                    Text(
-                    'Updated: ${DateFormat.jm().format(data.aqiData.recordedAt)}',
+                    'Updated: ${DateFormat.jm().format(DateTime.tryParse(data.aqiData.timestamp) ?? DateTime.now())}',
                     style: const TextStyle(color: Colors.white70, fontSize: 14),
                   ),
                 ],
@@ -143,8 +149,7 @@ class HomeScreen extends ConsumerWidget {
   }
 
   Widget _buildStatsGrid(dynamic data) {
-    final weather = data.aqiData.weather;
-    final pollutants = data.aqiData.pollutants;
+    final aqiData = data.aqiData;
 
     return GridView.count(
       crossAxisCount: 2,
@@ -154,25 +159,35 @@ class HomeScreen extends ConsumerWidget {
       mainAxisSpacing: 16,
       childAspectRatio: 2.5,
       children: [
-        if (pollutants?['pm25'] != null)
+        if (aqiData.pm25 > 0)
           StatsCard(
             title: 'PM2.5',
-            value: '${pollutants['pm25'].toStringAsFixed(2)} µg/m³',
+            value: '${aqiData.pm25.toStringAsFixed(2)} µg/m³',
           ),
-        if (pollutants?['pm10'] != null)
+        if (aqiData.pm10 > 0)
           StatsCard(
             title: 'PM10',
-            value: '${pollutants['pm10'].toStringAsFixed(2)} µg/m³',
+            value: '${aqiData.pm10.toStringAsFixed(2)} µg/m³',
           ),
-        if (weather?['max_temp'] != null)
+        if (aqiData.so2 > 0)
           StatsCard(
-            title: 'Temperature',
-            value: '${weather['max_temp']}°C',
+            title: 'SO2',
+            value: '${aqiData.so2.toStringAsFixed(2)} µg/m³',
           ),
-        if (weather?['rainfall'] != null)
+        if (aqiData.no2 > 0)
           StatsCard(
-            title: 'Rainfall',
-            value: '${weather['rainfall']} mm',
+            title: 'NO2',
+            value: '${aqiData.no2.toStringAsFixed(2)} µg/m³',
+          ),
+        if (aqiData.co > 0)
+          StatsCard(
+            title: 'CO',
+            value: '${aqiData.co.toStringAsFixed(2)} µg/m³',
+          ),
+        if (aqiData.o3 > 0)
+          StatsCard(
+            title: 'O3',
+            value: '${aqiData.o3.toStringAsFixed(2)} µg/m³',
           ),
       ],
     );

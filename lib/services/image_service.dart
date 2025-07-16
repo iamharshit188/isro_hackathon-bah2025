@@ -9,27 +9,27 @@ class ImageService {
   final String _baseUrl = "https://api.pexels.com/v1/search";
 
   Future<CityImage> getCityImage(String cityName) async {
-    if (_apiKey == null || _apiKey!.isEmpty) {
+    if (_apiKey == null || _apiKey.isEmpty) {
       return _getDefaultImage(cityName);
     }
 
     // Simple approach: search directly by city name (most effective)
     final uri = Uri.parse('$_baseUrl?query=$cityName&per_page=1');
-    
+
     try {
       final response = await http.get(
         uri,
-        headers: {'Authorization': _apiKey!},
+        headers: {'Authorization': _apiKey},
       );
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body) as Map<String, dynamic>;
         final photos = data['photos'] as List;
-        
+
         if (photos.isNotEmpty) {
           final photo = photos.first as Map<String, dynamic>;
           return CityImage(
-            url: photo['src']['medium'] ?? '',
+            url: photo['src']?['medium'] ?? '',
             attribution: photo['photographer'] ?? 'Unknown',
             description: photo['alt'] ?? cityName,
             width: photo['width'],
@@ -40,7 +40,7 @@ class ImageService {
     } catch (e) {
       // Silently fall back to default image on any error
     }
-    
+
     return _getDefaultImage(cityName);
   }
 

@@ -10,26 +10,25 @@ class FallbackApiService {
   static FallbackApiService get instance => _instance ??= FallbackApiService._();
   
   final String? _openAqApiKey = dotenv.env['OPENAQ_API_KEY'];
-  final String? _cpcbApiKey = dotenv.env['CPCB_API_KEY'];
-  
+
   FallbackApiService._();
 
   Future<EnhancedAqiData> getRealtimeAqi(double lat, double lon, {bool forceRefresh = false}) async {
     debugPrint('🔄 Using fallback API service for: $lat, $lon');
-    
+
     try {
       // Try OpenAQ first
       final openAqData = await _tryOpenAQ(lat, lon);
       if (openAqData != null) {
         return openAqData;
       }
-      
+
       // If OpenAQ fails, try WAQI (World Air Quality Index)
       final waqiData = await _tryWAQI(lat, lon);
       if (waqiData != null) {
         return waqiData;
       }
-      
+
       // If all fail, return mock data
       return _generateMockData(lat, lon);
     } catch (e) {
@@ -43,9 +42,9 @@ class FallbackApiService {
       final headers = <String, String>{
         'Content-Type': 'application/json',
       };
-      
-      if (_openAqApiKey != null && _openAqApiKey!.isNotEmpty) {
-        headers['X-API-Key'] = _openAqApiKey!;
+
+      if (_openAqApiKey != null && _openAqApiKey.isNotEmpty) {
+        headers['X-API-Key'] = _openAqApiKey;
       }
 
       final uri = Uri.parse('https://api.openaq.org/v2/latest')
@@ -62,7 +61,7 @@ class FallbackApiService {
       if (response.statusCode == 200) {
         final data = json.decode(response.body) as Map<String, dynamic>;
         final results = data['results'] as List?;
-        
+
         if (results != null && results.isNotEmpty) {
           final result = results.first as Map<String, dynamic>;
           return _parseOpenAQData(result, lat, lon);
