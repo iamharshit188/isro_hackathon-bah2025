@@ -11,11 +11,11 @@ import GoogleMaps
     // Configure Google Maps with a default API key
     if let path = Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist"),
        let plist = NSDictionary(contentsOfFile: path),
-       let apiKey = plist["API key googleeee"] as? String {
+       let apiKey = plist["Your GOOGLE Maps SDK Key for IOS"] as? String {
       GMSServices.provideAPIKey(apiKey)
     } else {
       // Use a default API key if plist is not found
-      GMSServices.provideAPIKey("API Key googleeee")
+      GMSServices.provideAPIKey("Your key for the same")
     }
 
     GeneratedPluginRegistrant.register(with: self)
