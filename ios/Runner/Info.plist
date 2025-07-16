@@ -53,5 +53,7 @@
 	<true/>
 	<key>GMSApiKey</key>
 	<string>AIzaSyBxLdoiWYjunuqTYTAU8ZeRYnFpzPwXCIQ</string>
+    <key>GMSApiKey</key>
+    <string>AIzaSyDPQkYFKfG4FTdgWZ7M_bnNjEwYjL7RDo8</string>
 </dict>
 </plist>

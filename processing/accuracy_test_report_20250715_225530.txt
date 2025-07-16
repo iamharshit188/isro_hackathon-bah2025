@@ -1,0 +1,188 @@
+ACCURACY IMPROVEMENT TEST REPORT\n==================================================\n\nTEST: Basic Calibration Model Training\nScript: train_calibrator.py\nSuccess: True\nDuration: 3.6s\nSTDOUT:\n\n\nSTDERR:\n2025-07-15 22:54:44,372 - INFO - Loading calibration data...
+2025-07-15 22:54:44,384 - INFO - Dataset shape: (2000, 6)
+2025-07-15 22:54:44,384 - INFO - AOD range: 54.666 to 1499.591
+2025-07-15 22:54:44,385 - INFO - PM2.5 range: 10.00 to 241.00
+2025-07-15 22:54:44,385 - INFO - Temperature std: 4.91°C
+2025-07-15 22:54:44,386 - INFO - Rainfall std: 3.36mm
+2025-07-15 22:54:44,387 - INFO - Applying StandardScaler...
+2025-07-15 22:54:44,394 - INFO - Training GradientBoostingRegressor...
+2025-07-15 22:54:45,666 - INFO - Training R²: 0.9726, MAE: 6.83
+2025-07-15 22:54:45,666 - INFO - Testing R²: 0.9043, MAE: 13.26
+2025-07-15 22:54:45,666 - INFO - Model generalization looks good!
+2025-07-15 22:54:45,666 - INFO - Testing model diversity with realistic inputs...
+/Users/iamharshit188/Desktop/isro_hackathon-bah2025/.venv/lib/python3.12/site-packages/sklearn/utils/validation.py:2749: UserWarning: X does not have valid feature names, but StandardScaler was fitted with feature names
+  warnings.warn(
+2025-07-15 22:54:45,669 - INFO - Diversity test results:
+2025-07-15 22:54:45,669 - INFO -   AOD=105, Temp=25-35°C, Rain=0mm → PM2.5=41.4
+2025-07-15 22:54:45,669 - INFO -   AOD=305, Temp=25-35°C, Rain=0mm → PM2.5=68.4
+2025-07-15 22:54:45,669 - INFO -   AOD=805, Temp=25-35°C, Rain=0mm → PM2.5=124.5
+2025-07-15 22:54:45,669 - INFO -   AOD=105, Temp=20-30°C, Rain=5mm → PM2.5=33.8
+2025-07-15 22:54:45,669 - INFO -   AOD=805, Temp=30-40°C, Rain=0mm → PM2.5=126.5
+2025-07-15 22:54:45,669 - INFO - Good prediction diversity! Std=39.73
+2025-07-15 22:54:45,671 - INFO - Feature importance ranking:
+2025-07-15 22:54:45,671 - INFO -   satellite_aod: 0.927
+2025-07-15 22:54:45,671 - INFO -   min_temp: 0.030
+2025-07-15 22:54:45,671 - INFO -   max_temp: 0.028
+2025-07-15 22:54:45,672 - INFO -   rainfall: 0.014
+2025-07-15 22:54:45,687 - INFO - Production calibration model and scaler saved successfully!
+2025-07-15 22:54:45,687 - INFO - Testing extreme cases within training range...
+/Users/iamharshit188/Desktop/isro_hackathon-bah2025/.venv/lib/python3.12/site-packages/sklearn/utils/validation.py:2749: UserWarning: X does not have valid feature names, but StandardScaler was fitted with feature names
+  warnings.warn(
+2025-07-15 22:54:45,688 - INFO -   Extreme case 1: AOD=55 → PM2.5=52.0
+2025-07-15 22:54:45,688 - INFO -   Extreme case 2: AOD=1500 → PM2.5=211.6
+2025-07-15 22:54:45,688 - INFO - Model training completed successfully!
+\n\n--------------------------------------------------\n\nTEST: Ensemble Model Training\nScript: ensemble_calibrator.py\nSuccess: True\nDuration: 9.6s\nSTDOUT:\n🚀 Creating ensemble calibration model...
+
+🧪 Testing ensemble model...
+
+🧪 Testing Ensemble Model:
+Input [AOD, min_temp, max_temp, rainfall] → Predicted PM2.5
+Test 1: [300, 25, 35, 0] → 7809.18
+Test 2: [600, 25, 35, 0] → 15396.81
+Test 3: [1200, 25, 35, 0] → 30572.08
+Test 4: [300, 20, 30, 5] → 7789.46
+Test 5: [1200, 35, 45, 0] → 30587.53
+
+📊 Model Information:
+  gb: Weight=0.249, R²=0.9117, MAE=12.89
+  rf: Weight=0.247, R²=0.9047, MAE=13.35
+  mlp: Weight=0.252, R²=0.9204, MAE=12.44
+  linear: Weight=0.252, R²=0.9223, MAE=12.27
+\n\nSTDERR:\nINFO:root:Loading calibration data...
+INFO:root:Training ensemble models...
+INFO:root:Training gb...
+INFO:root:  gb: R²=0.9117, MAE=12.89
+INFO:root:Training rf...
+INFO:root:  rf: R²=0.9047, MAE=13.35
+INFO:root:Training mlp...
+INFO:root:  mlp: R²=0.9204, MAE=12.44
+INFO:root:Training linear...
+INFO:root:  linear: R²=0.9223, MAE=12.27
+INFO:root:Optimized weights: {'gb': 0.24915681298633896, 'rf': 0.2472454391635625, 'mlp': 0.2515465690478175, 'linear': 0.252051178802281}
+/Users/iamharshit188/Desktop/isro_hackathon-bah2025/.venv/lib/python3.12/site-packages/sklearn/utils/validation.py:2749: UserWarning: X does not have valid feature names, but StandardScaler was fitted with feature names
+  warnings.warn(
+INFO:root:
+🎯 Ensemble Performance:
+INFO:root:  R²: -1.7147
+INFO:root:  MAE: 75.28
+INFO:root:✅ Ensemble model saved successfully!
+INFO:root:✅ Ensemble model loaded successfully
+\n\n--------------------------------------------------\n\nTEST: Advanced Feature Model Training\nScript: advanced_feature_engineering.py\nSuccess: True\nDuration: 14.3s\nSTDOUT:\n🚀 Training advanced feature model...
+
+🧪 Testing advanced model...
+
+🧪 Advanced Model Test Results:
+  AOD  300 → PM2.5  62.06
+  AOD  600 → PM2.5 103.64
+  AOD 1200 → PM2.5 185.63
+\n\nSTDERR:\nINFO:root:Loading and processing data with advanced features...
+/Users/iamharshit188/Desktop/isro_hackathon-bah2025/processing/advanced_feature_engineering.py:92: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  df = df.fillna(method='bfill').fillna(method='ffill')
+INFO:root:Using 27 features: ['satellite_aod', 'min_temp', 'max_temp', 'rainfall', 'hour', 'day_of_week', 'month', 'is_weekend', 'hour_sin', 'hour_cos']...
+INFO:root:Training data shape: (2000, 27)
+INFO:root:Training advanced GradientBoosting model...
+INFO:root:
+🎯 Advanced Model Performance:
+INFO:root:  Training R²: 0.9977, MAE: 1.90
+INFO:root:  Testing R²: 0.9002, MAE: 13.80
+INFO:root:
+📊 Top 10 Most Important Features:
+INFO:root:   1. aod_sqrt                 : 0.3731
+INFO:root:   2. satellite_aod            : 0.2276
+INFO:root:   3. aod_squared              : 0.1473
+INFO:root:   4. aod_log                  : 0.1371
+INFO:root:   5. aod_temp_interaction     : 0.0132
+INFO:root:   6. aod_rainfall_interaction : 0.0119
+INFO:root:   7. aod_lag_3                : 0.0086
+INFO:root:   8. temp_range               : 0.0084
+INFO:root:   9. aod_rolling_6            : 0.0083
+INFO:root:  10. temp_rolling_3           : 0.0076
+INFO:root:
+✅ Advanced model saved successfully!
+INFO:root:✅ Loaded advanced model with 27 features
+/Users/iamharshit188/Desktop/isro_hackathon-bah2025/processing/advanced_feature_engineering.py:234: FutureWarning: 'H' is deprecated and will be removed in a future version, please use 'h' instead.
+  'date': pd.date_range('2025-07-01', periods=3, freq='H')
+/Users/iamharshit188/Desktop/isro_hackathon-bah2025/processing/advanced_feature_engineering.py:92: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  df = df.fillna(method='bfill').fillna(method='ffill')
+\n\n--------------------------------------------------\n\nTEST: Direct Model Testing\nScript: test_model_directly.py\nSuccess: True\nDuration: 2.3s\nSTDOUT:\n🔍 Loading model and scaler...
+✅ Model and scaler loaded successfully
+
+🧪 Testing model with different AOD values:
+Input: [AOD, min_temp, max_temp, rainfall] → Predicted PM2.5
+Test 1: [293, 20.2, 28.1, 0] → 64.37
+Test 2: [1191, 29.1, 36.2, 0] → 164.88
+Test 3: [100, 25, 35, 0] → 50.54
+Test 4: [500, 25, 35, 0] → 92.30
+
+🔍 AOD Sensitivity Test (same weather, different AOD):
+AOD  100 → PM2.5  50.54
+AOD  200 → PM2.5  49.28
+AOD  300 → PM2.5  66.08
+AOD  500 → PM2.5  92.30
+AOD 1000 → PM2.5 153.42
+
+📊 Checking training data...
+AOD range in training: 54.67 to 1499.59
+PM2.5 range in training: 10.00 to 241.00
+AOD-PM2.5 correlation in training data: 0.952
+\n\nSTDERR:\n/Users/iamharshit188/Desktop/isro_hackathon-bah2025/.venv/lib/python3.12/site-packages/sklearn/utils/validation.py:2749: UserWarning: X does not have valid feature names, but StandardScaler was fitted with feature names
+  warnings.warn(
+/Users/iamharshit188/Desktop/isro_hackathon-bah2025/.venv/lib/python3.12/site-packages/sklearn/utils/validation.py:2749: UserWarning: X does not have valid feature names, but StandardScaler was fitted with feature names
+  warnings.warn(
+/Users/iamharshit188/Desktop/isro_hackathon-bah2025/.venv/lib/python3.12/site-packages/sklearn/utils/validation.py:2749: UserWarning: X does not have valid feature names, but StandardScaler was fitted with feature names
+  warnings.warn(
+/Users/iamharshit188/Desktop/isro_hackathon-bah2025/.venv/lib/python3.12/site-packages/sklearn/utils/validation.py:2749: UserWarning: X does not have valid feature names, but StandardScaler was fitted with feature names
+  warnings.warn(
+/Users/iamharshit188/Desktop/isro_hackathon-bah2025/.venv/lib/python3.12/site-packages/sklearn/utils/validation.py:2749: UserWarning: X does not have valid feature names, but StandardScaler was fitted with feature names
+  warnings.warn(
+/Users/iamharshit188/Desktop/isro_hackathon-bah2025/.venv/lib/python3.12/site-packages/sklearn/utils/validation.py:2749: UserWarning: X does not have valid feature names, but StandardScaler was fitted with feature names
+  warnings.warn(
+/Users/iamharshit188/Desktop/isro_hackathon-bah2025/.venv/lib/python3.12/site-packages/sklearn/utils/validation.py:2749: UserWarning: X does not have valid feature names, but StandardScaler was fitted with feature names
+  warnings.warn(
+/Users/iamharshit188/Desktop/isro_hackathon-bah2025/.venv/lib/python3.12/site-packages/sklearn/utils/validation.py:2749: UserWarning: X does not have valid feature names, but StandardScaler was fitted with feature names
+  warnings.warn(
+/Users/iamharshit188/Desktop/isro_hackathon-bah2025/.venv/lib/python3.12/site-packages/sklearn/utils/validation.py:2749: UserWarning: X does not have valid feature names, but StandardScaler was fitted with feature names
+  warnings.warn(
+\n\n--------------------------------------------------\n\nTEST: Model Debug Analysis\nScript: debug_calibration_model.py\nSuccess: True\nDuration: 2.4s\nSTDOUT:\n🔍 Loading calibration data...
+Dataset shape: (2000, 6)
+Dataset info:
+       ground_truth_pm25  satellite_aod     min_temp     max_temp    rainfall
+count        2000.000000    2000.000000  2000.000000  2000.000000  2000.00000
+mean          116.457269     773.023547    26.438637    36.401486     2.26500
+std            53.449879     423.705658     4.905858     5.726347     3.35908
+min            10.000000      54.666482    18.000198    23.689252     0.00000
+25%            71.323796     395.167384    22.263375    31.882459     0.00000
+50%           116.496766     785.659343    26.375804    36.538868     0.00000
+75%           162.310717    1138.484304    30.727739    40.730400     5.00000
+max           241.000257    1499.590626    34.992481    49.587289    10.00000
+
+📊 Data Range Analysis:
+Satellite AOD range: 54.666 to 1499.591
+Ground truth PM2.5 range: 10.000 to 241.000
+Temperature range: 18.0°C to 49.6°C
+
+🤖 Testing Model Behavior:
+Input [AOD, min_temp, max_temp, rainfall] → Predicted PM2.5
+Test 1: [0.5, 25, 35, 0] → 146.71
+Test 2: [1.0, 25, 35, 0] → 170.01
+Test 3: [2.0, 25, 35, 0] → 203.54
+Test 4: [0.5, 15, 25, 5] → 136.94
+Test 5: [2.0, 35, 45, 0] → 203.54
+\n\nSTDERR:\n\n\n--------------------------------------------------\n\nTEST: CPCB Validation Testing\nScript: validate_against_cpcb.py\nSuccess: True\nDuration: 4.0s\nSTDOUT:\n🔍 Starting model accuracy validation...
+
+🌍 Testing Delhi...
+Warning: Supabase credentials not found in environment
+❌ Delhi: No valid data received
+
+🌍 Testing Mumbai...
+Warning: Supabase credentials not found in environment
+❌ Mumbai: No valid data received
+
+🌍 Testing Bangalore...
+Warning: Supabase credentials not found in environment
+❌ Bangalore: No valid data received
+
+🌍 Testing Chennai...
+Warning: Supabase credentials not found in environment
+❌ Chennai: No valid data received
+\n\nSTDERR:\n\n\n--------------------------------------------------\n\n
