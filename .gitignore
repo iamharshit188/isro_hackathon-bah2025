@@ -167,7 +167,7 @@ checkpoints/
 
 # Data files
 *.csv
-*.json
+
 *.parquet
 data/
 datasets/

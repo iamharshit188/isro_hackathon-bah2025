@@ -256,9 +256,8 @@ class _EnhancedHomeScreenState extends ConsumerState<EnhancedHomeScreen> {
   }
 
   Widget _buildWeatherSection(BuildContext context, EnhancedAqiData aqiData) {
-    if (aqiData.weather == null) return const SizedBox.shrink();
+    final weather = aqiData.weather;
 
-    final weather = aqiData.weather!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -269,21 +268,24 @@ class _EnhancedHomeScreenState extends ConsumerState<EnhancedHomeScreen> {
           ),
         ),
         const SizedBox(height: 12),
-        Row(
-          children: [
-            if (weather['max_temp'] != null) ...[
-              Icon(Icons.thermostat, color: Colors.orange[600]),
-              const SizedBox(width: 8),
-              Text('${weather['max_temp']}°C'),
-              const SizedBox(width: 24),
+        if (weather == null)
+          const Text('No weather data available for this location.')
+        else
+          Row(
+            children: [
+              if (weather['max_temp'] != null) ...[
+                Icon(Icons.thermostat, color: Colors.orange[600]),
+                const SizedBox(width: 8),
+                Text('${weather['max_temp']}°C'),
+                const SizedBox(width: 24),
+              ],
+              if (weather['rainfall'] != null) ...[
+                Icon(Icons.water_drop, color: Colors.blue[600]),
+                const SizedBox(width: 8),
+                Text('${weather['rainfall']} mm'),
+              ],
             ],
-            if (weather['rainfall'] != null) ...[
-              Icon(Icons.water_drop, color: Colors.blue[600]),
-              const SizedBox(width: 8),
-              Text('${weather['rainfall']} mm'),
-            ],
-          ],
-        ),
+          ),
       ],
     );
   }
@@ -305,7 +307,7 @@ class _EnhancedHomeScreenState extends ConsumerState<EnhancedHomeScreen> {
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.1),
+                color: Colors.black.withOpacity(0.1),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -313,52 +315,24 @@ class _EnhancedHomeScreenState extends ConsumerState<EnhancedHomeScreen> {
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: Container(
-              color: Colors.grey[100],
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.location_on,
-                      size: 48,
-                      color: Colors.grey[400],
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      'Location: ${aqiData.city}',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Lat: ${aqiData.latitude.toStringAsFixed(4)}, Lon: ${aqiData.longitude.toStringAsFixed(4)}',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey[500],
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.blue[50],
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        'Maps temporarily disabled',
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: Colors.blue[600],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+            child: GoogleMap(
+              onMapCreated: (controller) => _mapController = controller,
+              initialCameraPosition: CameraPosition(
+                target: LatLng(aqiData.latitude, aqiData.longitude),
+                zoom: 12,
               ),
+              markers: {
+                Marker(
+                  markerId: const MarkerId('currentLocation'),
+                  position: LatLng(aqiData.latitude, aqiData.longitude),
+                  infoWindow: InfoWindow(
+                    title: aqiData.city,
+                    snippet: 'AQI: ${aqiData.aqi.toInt()}',
+                  ),
+                ),
+              },
+              myLocationButtonEnabled: false,
+              zoomControlsEnabled: false,
             ),
           ),
         ),

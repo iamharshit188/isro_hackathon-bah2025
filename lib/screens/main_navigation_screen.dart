@@ -33,6 +33,7 @@ class MainNavigationScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentIndex = ref.watch(currentIndexProvider);
+    print("Building MainNavigationScreen with index: $currentIndex"); // Added for debugging
 
     return Scaffold(
       body: IndexedStack(

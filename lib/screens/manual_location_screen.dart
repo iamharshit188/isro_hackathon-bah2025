@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/location_provider.dart';
 import '../screens/home_screen.dart';
 import '../screens/location_search_screen.dart';
+import '../models/location_result.dart';
 
 class ManualLocationScreen extends ConsumerStatefulWidget {
   const ManualLocationScreen({super.key});
@@ -49,10 +50,7 @@ class _ManualLocationScreenState extends ConsumerState<ManualLocationScreen> {
 
       if (!mounted) return;
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
-      );
+      Navigator.pop(context, true); // Return true on success
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -64,20 +62,19 @@ class _ManualLocationScreenState extends ConsumerState<ManualLocationScreen> {
   }
 
   Future<void> _searchLocation() async {
-    final result = await Navigator.push(
+    final result = await Navigator.push<Map<String, dynamic>>(
       context,
       MaterialPageRoute(builder: (context) => const LocationSearchScreen()),
     );
 
-    if (result != null && result is Map) {
-      final lat = result['latitude'];
-      final lon = result['longitude'];
-      await ref.read(locationProvider.notifier).setManualLocation(lat, lon);
+    if (result != null) {
+      final locationResult = LocationResult.fromMap(result);
+      await ref.read(locationProvider.notifier).setManualLocation(
+        locationResult.lat,
+        locationResult.lng,
+      );
       if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
-        );
+        Navigator.pop(context, true); // Return true on success
       }
     }
   }

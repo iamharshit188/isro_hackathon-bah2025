@@ -356,12 +356,20 @@ class _LocationInitScreenState extends ConsumerState<LocationInitScreen> {
     );
   }
 
-  void _showManualLocationDialog() {
-    Navigator.push(
+  void _showManualLocationDialog() async {
+    final result = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => const ManualLocationScreen(),
       ),
     );
+
+    if (result == true && mounted) {
+       Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => const MainNavigationScreen(),
+        ),
+      );
+    }
   }
 }
